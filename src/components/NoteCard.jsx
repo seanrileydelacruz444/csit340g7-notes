@@ -1,10 +1,20 @@
+import { useState } from "react";
+
 export default function NoteCard({title, body}) {
+    const [visible, setVisible] = useState(false);
+    
     return(
         <div>
             <h3 className="pr-8 text-[22px] font-normal break-words">{title}</h3>
-            <p className="mt-3 text-[17px] break-words whitespace-pre-wrap text-[#4d4d4d]">{body}</p>
 
-            <button type="button" className="mt-3 cursor-pointer text-[15px] font-normal text-[#b83f45] underline"> Show More </button>
+            {visible && <p className="mt-3 text-[15px] font-normal text-[#949494]">{body}</p>}
+            
+            <button 
+                type="button" 
+                className="mt-3 cursor-pointer text-[15px] font-normal text-[#b83f45] underline"
+                onClick={() => setVisible((prev) => !prev)}
+            
+            > {visible ? "Show Less" : "Show More"}</button>
         </div>
     );
 }
