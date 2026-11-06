@@ -6,18 +6,18 @@ export default function Notes() {
         {id: 1, text: "Review map and filter", body: "Redo the TodoMVC steps without looking at the guide."},
         {id: 2, text: "Prepare for the quiz", body: "Practice writing one handler for many inputs."}
     ]);
-    const [form, setForm] = useState({name: "", body: ""});
+    const [form, setForm] = useState({title: '', body: ''});
 
     const handleInput = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({...prev, [name]: value}));
     }
 
-    /*const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const newNote = { id: crypto.randomUUID(), text: form.value, body: form.value };
-        setNote()
-    }*/
+        setNotes((prev) => [...prev, {id: crypto.randomUUID(), text: form.title, body: form.body}]);
+        setForm({title: "", body: ""});
+    }
 
     return(
         <div className="grid min-h-screen grid-cols-[420px_1fr]">
@@ -31,11 +31,12 @@ export default function Notes() {
                     <input placeholder="Search by title" className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" />
                 </div>
 
-                <form className="grid gap-3">
+                <form className="grid gap-3" onSubmit={handleSubmit}>
                     <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
                     <input
                         name="title"
                         placeholder="Title"
+                        value={form.title}
                         className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" 
                         onChange={handleInput}
                         />
@@ -43,11 +44,15 @@ export default function Notes() {
                     <textarea
                         name="body"
                         placeholder="Write your note"
+                        value={form.body}
                         className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" 
                         onChange={handleInput}
                         />
                 
-                    <button type="submit" className="h-[50px] cursor-pointer bg-[#b83f45] text-[17px] font-normal text-white hover:bg-[#a33439]">
+                    <button 
+                        type="submit" 
+                        className="h-[50px] cursor-pointer bg-[#b83f45] text-[17px] font-normal text-white hover:bg-[#a33439]"
+                        >
                         Add Note
                     </button>
                 </form>
