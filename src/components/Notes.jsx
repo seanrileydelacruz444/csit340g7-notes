@@ -2,16 +2,22 @@ import { useState } from "react";
 import NoteCard from "./NoteCard";
 
 export default function Notes() {
-    const [notes] = useState([
+    const [notes, setNotes] = useState([
         {id: 1, text: "Review map and filter", body: "Redo the TodoMVC steps without looking at the guide."},
         {id: 2, text: "Prepare for the quiz", body: "Practice writing one handler for many inputs."}
     ]);
-    const [item, setItem] = useState([]);
+    const [form, setForm] = useState({name: "", body: ""});
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setNotes((prev) => [...prev, {id: crypto.randomUUID(), ...notes}])
+    const handleInput = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({...prev, [name]: value}));
     }
+
+    /*const handleSubmit = (e) => {
+        e.preventDefault();
+        const newNote = { id: crypto.randomUUID(), text: form.value, body: form.value };
+        setNote()
+    }*/
 
     return(
         <div className="grid min-h-screen grid-cols-[420px_1fr]">
@@ -30,12 +36,16 @@ export default function Notes() {
                     <input
                         name="title"
                         placeholder="Title"
-                        className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" />
-                
+                        className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" 
+                        onChange={handleInput}
+                        />
+
                     <textarea
                         name="body"
                         placeholder="Write your note"
-                        className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" />
+                        className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]" 
+                        onChange={handleInput}
+                        />
                 
                     <button type="submit" className="h-[50px] cursor-pointer bg-[#b83f45] text-[17px] font-normal text-white hover:bg-[#a33439]">
                         Add Note
