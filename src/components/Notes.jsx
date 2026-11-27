@@ -1,18 +1,13 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import NoteCard from "./NoteCard";
 
-
-const startingNotes = [
-    { id: 1, title: 'Review and filter', body: 'Redo the TodoMVC steps without looking at the guide.',},
-    { id: 2, title: 'Prepare for the quiz', body: 'Practice writing one handler for many inputs', },
-]
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function Notes() {
 
-    const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('notes');
-        return saved ? JSON.parse(saved) : startingNotes;
-    })
+    const [notes, setNotes] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
     const [form, setForm] = useState(() => {
         const saved = localStorage.getItem('draft');
@@ -22,8 +17,26 @@ export default function Notes() {
     const titleRef = useRef(null);
 
     useEffect(() => {
-        localStorage.setItem('notes', JSON.stringify(notes));
-    }, [notes])
+        let ignore = false
+        async function loadNotes() {
+            try{
+                const res = await fetch(API_URL + '/notes')
+                if(!res.ok){
+                    throw new Error('The server answered ' + res.status)
+                }
+                const data = await res.json()
+                if(!ignore) setNotes(data)       
+            }catch (err) {
+                if(!ignore) setError(err.message)
+            }
+            if(!ignore) setLoading(false)
+        }
+
+        loadNotes()
+        return() => {
+            ignore = true
+        }
+    }, [])
 
     useEffect(() => {
         const id = setTimeout(() => {
@@ -118,7 +131,9 @@ export default function Notes() {
                     ))}
                 </ul>
 
-                {visibleNotes.length === 0 && (
+                {loading && <p className="text-lg text-[#949494]">Loading notes...</p>}
+                {error && <p className="text-lg text-[#b83f45]">{error}</p>}
+                {!loading && !error && visibleNotes.length === 0 && (
                     <p className="text-lg text-[#949494]">No notes found</p>
                 )}
             </section>
